@@ -28,20 +28,42 @@ const journey = [
 ];
 const topAward = awards[0];
 
+// The three ways in. Counselling leads the bento as the usual starting point;
+// each card opens WhatsApp with a message about that service.
 const offers = [
-  { image: 'gallery/session-03', tag: 'Counselling', title: 'One-to-one counselling', text: 'Sit down with Dr. Deepa, talk through what you’re facing and find your starting point.' },
-  { image: 'stock/candle-hands', tag: 'Energy healing', title: 'Channelled energy work', text: 'Modalities channelled by Dr. Deepa, including Evolving Cosmic Communion.' },
-  { image: 'stock/herbs', tag: 'Natural healing', title: 'Body & natural healing', text: categories.body.blurb },
+  {
+    image: 'gallery/session-03',
+    tag: 'Counselling',
+    title: 'One-to-one counselling',
+    text: 'Sit down with Dr. Deepa, talk through what you’re facing and find your starting point.',
+    cta: 'Book a session',
+    ask: 'Hello, I would like to book a one-to-one counselling session with Dr. Deepa.',
+  },
+  {
+    image: 'stock/candle-hands',
+    tag: 'Energy healing',
+    title: 'Channelled energy work',
+    text: 'Modalities channelled by Dr. Deepa, including Evolving Cosmic Communion.',
+    cta: 'Ask about energy work',
+    ask: 'Hello, I would like to know more about channelled energy work.',
+  },
+  {
+    image: 'stock/herbs',
+    tag: 'Natural healing',
+    title: 'Body & natural healing',
+    text: categories.body.blurb,
+    cta: 'Ask about natural healing',
+    ask: 'Hello, I would like to know more about body & natural healing.',
+  },
 ];
 
 const themeImages: Record<CategoryId, string> = {
   signature: 'stock/milky-way',
   body: 'stock/herbs',
   self: 'gallery/session-01',
-  soul: 'stock/light-rays',
+  soul: 'stock/nature',
 };
 
-const marquee = ['Counselling', 'Energy healing', 'Workshops', 'Crystals', 'Transform Life'];
 
 // Hero headline; the middle word is set in the softer grey.
 const heroWords = [{ t: 'Find' }, { t: 'your', soft: true }, { t: 'calm' }];
@@ -53,7 +75,7 @@ const tileArt: Partial<Record<string, string>> = {
   'natural-healing-secrets': 'stock/herbs',
   'holistic-to-soulistic': 'stock/nature',
   'angelic-consciousness': 'stock/candle-hands',
-  merkaba: 'stock/light-rays',
+  merkaba: 'gallery/session-07',
 };
 const tiles = programs.map((p) => ({ label: p.name, image: tileArt[p.slug] ?? p.image }));
 // Each strip holds every program, the second starting halfway through. The set
@@ -232,43 +254,83 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
     </div>
     <div class="wrap offer-grid" data-stagger>
       {
-        offers.map((o) => (
-          <article class="card offer">
-            <div class="offer-img">
-              <Image src={img(o.image)} alt="" widths={[480, 800]} sizes="(min-width: 860px) 30vw, 90vw" />
-              <span class="offer-tag">{o.tag}</span>
+        offers.map((o, i) => (
+          <article class:list={['offer', { 'offer-lead': i === 0 }]}>
+            <Image
+              src={img(o.image)}
+              alt=""
+              widths={[640, 960, 1280, 1600]}
+              sizes={i === 0 ? '(min-width: 860px) 62vw, 100vw' : '(min-width: 860px) 46vw, 100vw'}
+              quality={88}
+            />
+            <span class="offer-tag">
+              <span class="offer-n">{String(i + 1).padStart(2, '0')}</span>
+              {o.tag}
+            </span>
+            <div class="offer-body">
+              <div>
+                <h3 class="card-title">{o.title}</h3>
+                <p>{o.text}</p>
+              </div>
+              <span class="offer-go" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
             </div>
-            <h3 class="card-title">{o.title}</h3>
-            <p>{o.text}</p>
+            <a href={waLink(site.whatsapp.appointments, o.ask)} class="offer-link" target="_blank" rel="noopener">
+              <span class="visually-hidden">{o.cta}</span>
+            </a>
           </article>
         ))
       }
     </div>
   </section>
 
-  <!-- ============ SIGNATURE: Evolving Cosmic Communion with a particle sphere ============ -->
+  <!-- ============ SIGNATURE: Evolving Cosmic Communion in a night-sky panel ============ -->
   <section class="sec signature" id="signature">
     <div class="wrap center-head">
       <p class="eyebrow" data-animate>Signature modality</p>
       <BlurTitle text="Evolving Cosmic *Communion*" />
-    </div>
-    <div class="wrap sphere-stage">
-      <canvas class="sphere" data-sphere aria-hidden="true"></canvas>
-      {
-        ecc.explore.slice(0, 2).map((e, i) => (
-          <div class={`card side-card side-${i}`} data-animate={i === 0 ? 'left' : 'right'}>
-            <span class="side-ic"><Icon name={i === 0 ? 'sparkle' : 'layers'} size={15} /></span>
-            <h3 class="card-title">{e.title}</h3>
-            <p>{e.text}</p>
-          </div>
-        ))
-      }
-    </div>
-    <div class="wrap center-head sig-foot">
       <p class="lede" data-animate>{ecc.short}</p>
-      {ecc.quote && <blockquote class="sig-quote" data-animate>“{ecc.quote}”</blockquote>}
-      <div data-animate>
-        <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${ecc.name}.`)} class="btn btn-ink" target="_blank" rel="noopener">Ask about ECC <Icon name="arrow-up-right" size={14} /></a>
+    </div>
+
+    <div class="wrap">
+      <div class="cosmos" data-cosmos data-animate>
+        <canvas class="cosmos-canvas" data-sphere aria-hidden="true"></canvas>
+
+        <div class="ecc-stage">
+          <div class="orb-slot" data-orb></div>
+          {
+            [ecc.explore.slice(0, 2), ecc.explore.slice(2, 4)].map((col, c) => (
+              <div class={`ecc-col ecc-col-${c}`}>
+                {col.map((e, k) => (
+                  <div class="ecc-card" data-animate={c === 0 ? 'left' : 'right'}>
+                    <span class="ecc-n">{String(c * 2 + k + 1).padStart(2, '0')}</span>
+                    <h3>{e.title}</h3>
+                    <p>{e.text}</p>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+        </div>
+
+        {ecc.quote && <blockquote class="ecc-quote" data-animate>“{ecc.quote.replace(' — ', ' — ')}”</blockquote>}
+
+        <div class="ecc-flow" data-animate>
+          <div>
+            <p class="flow-label">How a session flows</p>
+            <ol role="list" class="flow-steps">
+              {
+                (ecc.process ?? []).map((s, i) => (
+                  <li>
+                    <span class="flow-n">{String(i + 1).padStart(2, '0')}</span>
+                    <strong>{s.title}</strong>
+                    <span class="flow-txt">{s.text}</span>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+          <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${ecc.name}.`)} class="btn btn-light" target="_blank" rel="noopener">Ask about ECC <Icon name="arrow-up-right" size={14} /></a>
+        </div>
       </div>
     </div>
   </section>
@@ -329,15 +391,6 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
       }
     </div>
   </section>
-
-  <!-- ============ WORDMARK BAND ============ -->
-  <div class="sec centre" aria-hidden="true">
-    <div class="marquee">
-      <div class="marquee-track">
-        {[0, 1].map(() => <span class="marquee-set">{marquee.map((m) => <span>{m} <i>—</i> </span>)}</span>)}
-      </div>
-    </div>
-  </div>
 </Base>
 
 <script>
@@ -426,109 +479,211 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
     })();
   }
 
-  // A slowly turning sphere of points with an orbit and drifting dust,
-  // drawn only while it is on screen.
-  const canvas = document.querySelector<HTMLCanvasElement>('[data-sphere]');
+  // The ECC night sky: twinkling stars and a sphere of glowing points with a
+  // ringed orbit and a small moon. The canvas covers the whole panel; the
+  // sphere sits over the empty [data-orb] cell. It runs only while on screen.
+  const cosmos = document.querySelector<HTMLElement>('[data-cosmos]');
+  const canvas = cosmos?.querySelector<HTMLCanvasElement>('[data-sphere]');
+  const orb = cosmos?.querySelector<HTMLElement>('[data-orb]');
   const ctx = canvas?.getContext('2d');
-  if (canvas && ctx) {
+  if (cosmos && canvas && orb && ctx) {
+    const TAU = Math.PI * 2;
+
+    // One soft, glowing dot, drawn once and stamped for every point.
+    const sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 64;
+    const sctx = sprite.getContext('2d')!;
+    const dot = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    dot.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    dot.addColorStop(0.22, 'rgba(220, 224, 255, 0.9)');
+    dot.addColorStop(0.55, 'rgba(140, 147, 227, 0.22)');
+    dot.addColorStop(1, 'rgba(140, 147, 227, 0)');
+    sctx.fillStyle = dot;
+    sctx.fillRect(0, 0, 64, 64);
+
+    // Points spread evenly over a sphere (Fibonacci lattice).
     const points: [number, number, number][] = [];
-    const count = 760;
+    const count = 900;
     for (let i = 0; i < count; i++) {
       const y = 1 - (i / (count - 1)) * 2;
       const r = Math.sqrt(1 - y * y);
-      const t = i * 2.399963;
-      points.push([Math.cos(t) * r, y, Math.sin(t) * r]);
+      const a = i * 2.399963;
+      points.push([Math.cos(a) * r, y, Math.sin(a) * r]);
     }
-    const dust = Array.from({ length: 150 }, () => ({
-      a: Math.random() * Math.PI * 2,
-      r: 1.2 + Math.random() * 1.1,
-      y: (Math.random() - 0.5) * 1.5,
-      s: Math.random() * 0.7 + 0.3,
-      v: Math.random() * 0.002 + 0.0008,
+    const stars = Array.from({ length: 150 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1 + 0.3,
+      phase: Math.random() * TAU,
+      speed: 0.5 + Math.random() * 1.5,
     }));
+    const dust = Array.from({ length: 80 }, () => ({
+      a: Math.random() * TAU,
+      r: 1.25 + Math.random() * 0.9,
+      y: (Math.random() - 0.5) * 1.4,
+      s: Math.random() * 0.8 + 0.4,
+      v: Math.random() * 0.1 + 0.04,
+    }));
+
     let w = 0;
     let h = 0;
+    let cx = 0;
+    let cy = 0;
+    let R = 0;
+    let t = 0;
     let rot = 0;
-    let raf = 0;
-    let running = false;
+    let tilt = 0.35;
+    let tiltTo = 0.35;
+    let spin = 0.18;
+    let spinTo = 0.18;
 
     const size = () => {
-      const box = canvas.getBoundingClientRect();
+      const box = cosmos.getBoundingClientRect();
+      const slot = orb.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = box.width;
       h = box.height;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cx = slot.left - box.left + slot.width / 2;
+      cy = slot.top - box.top + slot.height / 2;
+      R = Math.min(slot.width, slot.height) * 0.34;
+    };
+
+    const stamp = (x: number, y: number, d: number, alpha: number) => {
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(sprite, x - d / 2, y - d / 2, d, d);
+    };
+
+    // The orbit, drawn in two halves so it passes behind the sphere and
+    // then in front of it. The moon rides the same ellipse.
+    const ringRx = () => R * 1.6;
+    const ringRy = () => R * 0.42;
+    const ringTilt = -0.25;
+    const onRing = (a: number) => {
+      const x = Math.cos(a) * ringRx();
+      const y = Math.sin(a) * ringRy();
+      return [cx + x * Math.cos(ringTilt) - y * Math.sin(ringTilt), cy + x * Math.sin(ringTilt) + y * Math.cos(ringTilt)];
+    };
+    const ring = (from: number, to: number, alpha: number) => {
+      const g = ctx.createLinearGradient(cx - ringRx(), 0, cx + ringRx(), 0);
+      g.addColorStop(0, 'rgba(180, 186, 234, 0)');
+      g.addColorStop(0.5, `rgba(200, 205, 255, ${alpha})`);
+      g.addColorStop(1, 'rgba(180, 186, 234, 0)');
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, ringRx(), ringRy(), ringTilt, from, to);
+      ctx.stroke();
+    };
+    const moon = (front: boolean) => {
+      const a = t * 0.45;
+      if (Math.sin(a) > 0 !== front) return;
+      for (let k = 6; k >= 0; k--) {
+        const [x, y] = onRing(a - k * 0.035);
+        stamp(x, y, k ? 10 - k : 18, k ? 0.5 - k * 0.07 : 1);
+      }
     };
 
     const draw = () => {
+      ctx.globalCompositeOperation = 'source-over';
       ctx.clearRect(0, 0, w, h);
-      const R = Math.min(w, h) * 0.3;
-      const cx = w / 2;
-      const cy = h / 2;
-      const glow = ctx.createRadialGradient(cx, cy, R * 0.1, cx, cy, R * 1.7);
-      glow.addColorStop(0, 'rgba(180, 186, 234, 0.45)');
-      glow.addColorStop(1, 'rgba(180, 186, 234, 0)');
-      ctx.fillStyle = glow;
+
+      for (const s of stars) {
+        ctx.globalAlpha = 0.2 + 0.6 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(s.x * w, s.y * h, s.r, 0, TAU);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      const halo = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 2.3);
+      halo.addColorStop(0, 'rgba(120, 128, 240, 0.38)');
+      halo.addColorStop(0.45, 'rgba(90, 96, 210, 0.12)');
+      halo.addColorStop(1, 'rgba(90, 96, 210, 0)');
+      ctx.fillStyle = halo;
       ctx.beginPath();
-      ctx.arc(cx, cy, R * 1.7, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 2.3, 0, TAU);
       ctx.fill();
+
+      ring(Math.PI, TAU, 0.22);
+      ctx.globalCompositeOperation = 'lighter';
+      moon(false);
 
       const cos = Math.cos(rot);
       const sin = Math.sin(rot);
-      const ct = Math.cos(0.35);
-      const st = Math.sin(0.35);
+      const ct = Math.cos(tilt);
+      const st = Math.sin(tilt);
       for (const [x, y, z] of points) {
         const x1 = x * cos - z * sin;
         const z1 = x * sin + z * cos;
         const y1 = y * ct - z1 * st;
         const depth = (y * st + z1 * ct + 1) / 2;
-        const s = 0.6 + depth * 1.7;
-        ctx.fillStyle = `rgba(63, 70, 184, ${0.1 + 0.75 * depth})`;
-        ctx.fillRect(cx + x1 * R - s / 2, cy + y1 * R - s / 2, s, s);
+        stamp(cx + x1 * R, cy + y1 * R, 3 + depth * 7, 0.06 + depth * 0.8);
       }
-
-      ctx.strokeStyle = 'rgba(63, 70, 184, 0.22)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, R * 1.5, R * 0.4, -0.25, 0, Math.PI * 2);
-      ctx.stroke();
 
       for (const d of dust) {
-        const x = Math.cos(d.a) * d.r * R;
         const near = (Math.sin(d.a) + 1) / 2;
-        ctx.fillStyle = `rgba(106, 113, 214, ${0.2 + 0.5 * near})`;
-        ctx.beginPath();
-        ctx.arc(cx + x, cy + d.y * R + Math.sin(d.a) * R * 0.15, d.s * 1.3, 0, Math.PI * 2);
-        ctx.fill();
+        stamp(cx + Math.cos(d.a) * d.r * R, cy + d.y * R + Math.sin(d.a) * R * 0.15, d.s * 6, 0.12 + 0.4 * near);
       }
+
+      ctx.globalCompositeOperation = 'source-over';
+      ring(0, Math.PI, 0.6);
+      ctx.globalCompositeOperation = 'lighter';
+      moon(true);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
     };
 
-    const loop = () => {
-      rot += 0.0035;
-      dust.forEach((d) => (d.a += d.v));
+    let raf = 0;
+    let last = 0;
+    let running = false;
+    const loop = (now: number) => {
+      const dt = Math.min((now - (last || now)) / 1000, 0.05);
+      last = now;
+      t += dt;
+      tilt += (tiltTo - tilt) * Math.min(dt * 3, 1);
+      spin += (spinTo - spin) * Math.min(dt * 2, 1);
+      rot += spin * dt;
+      dust.forEach((d) => (d.a += d.v * dt));
       draw();
       raf = requestAnimationFrame(loop);
     };
 
     size();
     draw();
-    window.addEventListener('resize', () => {
+    new ResizeObserver(() => {
       size();
       draw();
-    });
+    }).observe(cosmos);
 
     if (!reduced && 'IntersectionObserver' in window) {
       new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting && !running) {
           running = true;
-          loop();
+          last = 0;
+          raf = requestAnimationFrame(loop);
         } else if (!entry.isIntersecting && running) {
           running = false;
           cancelAnimationFrame(raf);
         }
-      }).observe(canvas);
+      }).observe(cosmos);
+
+      // The sphere leans toward the pointer and turns a little faster.
+      if (window.matchMedia('(pointer: fine)').matches) {
+        cosmos.addEventListener('pointermove', (e) => {
+          const r = cosmos.getBoundingClientRect();
+          tiltTo = 0.35 + ((e.clientY - r.top) / r.height - 0.5) * 0.5;
+          spinTo = 0.18 + ((e.clientX - r.left) / r.width - 0.5) * 0.5;
+        });
+        cosmos.addEventListener('pointerleave', () => {
+          tiltTo = 0.35;
+          spinTo = 0.18;
+        });
+      }
     }
   }
 </script>
@@ -1485,146 +1640,404 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
   }
 
   /* ---------- Approach ---------- */
+  /* Bento: counselling as a tall lead card, the other two stacked beside it.
+     Photos run full bleed; text sits on a frosted panel so it stays legible
+     over any image. */
   .offer-grid {
     display: grid;
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
   }
 
   @media (min-width: 860px) {
     .offer-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-auto-rows: minmax(300px, auto);
+    }
+
+    .offer-lead {
+      grid-row: span 2;
     }
   }
 
   .offer {
-    display: grid;
-    align-content: start;
-    gap: 0.6rem;
-    padding: 0.6rem 0.6rem 1.5rem;
-  }
-
-  .offer-img {
     position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 360px;
     overflow: hidden;
-    aspect-ratio: 4 / 3;
-    margin-bottom: 0.6rem;
-    border-radius: 18px;
+    border-radius: 24px;
+    background: var(--periwinkle-100);
+    box-shadow: var(--card-shadow);
   }
 
-  .offer-img :global(img) {
+  @media (min-width: 860px) {
+    .offer {
+      min-height: 0;
+    }
+  }
+
+  .offer :global(img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.8s var(--ease);
+    filter: saturate(1.06) contrast(1.04);
+    transition: transform 1.2s var(--ease);
   }
 
-  .offer:hover .offer-img :global(img) {
-    transform: scale(1.04);
+  .offer:hover :global(img) {
+    transform: scale(1.05);
+  }
+
+  /* A light vignette at the foot grounds the panel */
+  .offer::after {
+    content: '';
+    position: absolute;
+    inset: 45% 0 0;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent, rgba(12, 13, 30, 0.35));
+    pointer-events: none;
   }
 
   .offer-tag {
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    padding: 0.3rem 0.75rem;
+    top: 1rem;
+    left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.85rem 0.3rem 0.3rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px -12px rgba(24, 24, 29, 0.45);
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--ink);
   }
 
-  .offer h3,
-  .offer p {
-    padding-inline: 0.9rem;
+  .offer-n {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: #121214;
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    color: var(--white);
   }
 
-  .offer h3 {
-    font-size: 1.375rem;
+  .offer-body {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    margin: clamp(0.6rem, 1.2vw, 0.85rem);
+    padding: clamp(1rem, 2vw, 1.35rem);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.84);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 12px 30px -14px rgba(24, 24, 29, 0.35);
   }
 
-  .offer p {
-    font-size: 0.9375rem;
-    color: var(--text-3);
+  .offer-body > div {
+    display: grid;
+    flex: 1;
+    gap: 0.35rem;
+  }
+
+  .offer-body .card-title {
+    font-size: clamp(1.2rem, 1rem + 0.6vw, 1.45rem);
+  }
+
+  .offer-lead .offer-body .card-title {
+    font-size: clamp(1.45rem, 1.1rem + 1.2vw, 2rem);
+  }
+
+  .offer-body p {
+    max-width: 44ch;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+
+  /* The whole card is the link: an empty anchor laid over it. (It can't
+     live inside the panel, whose backdrop-filter would contain it.) */
+  .offer-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  /* Drawn inside: the card's overflow would clip an outer ring */
+  .offer-link:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .offer-go {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #121214;
+    color: var(--white);
+    transition: background-color 0.3s;
+  }
+
+  .offer-go :global(svg) {
+    transition: transform 0.4s var(--ease);
+  }
+
+  .offer:hover .offer-go {
+    background: var(--blue);
+  }
+
+  .offer:hover .offer-go :global(svg) {
+    transform: rotate(45deg);
   }
 
   /* ---------- Signature ---------- */
-  .sphere-stage {
-    display: grid;
-    justify-items: center;
-    gap: 1rem;
+  /* One contained night-sky panel: the light page's single dark feature,
+     where the glowing particles read best. */
+  .cosmos {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(1.1rem, 3vw, 2.5rem);
+    border-radius: 32px;
+    background: radial-gradient(120% 85% at 50% 32%, #22266b 0%, #12143a 42%, #090a1c 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 40px 80px -40px rgba(12, 13, 40, 0.6);
+    color: var(--white);
   }
 
-  .sphere {
-    width: min(100%, 520px);
-    height: auto;
+  .cosmos-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Sphere in the middle, two themes either side; on phones the sphere
+     comes first and the cards stack beneath it. */
+  .ecc-stage {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .orb-slot {
+    justify-self: center;
+    width: min(100%, 400px);
     aspect-ratio: 1;
   }
 
-  @media (min-width: 960px) {
-    .sphere-stage {
-      grid-template-columns: 1fr minmax(0, 520px) 1fr;
+  .ecc-col {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 1000px) {
+    .ecc-stage {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 400px) minmax(0, 1fr);
       align-items: center;
+      gap: clamp(1.5rem, 4vw, 3.5rem);
     }
 
-    .sphere {
+    .orb-slot {
       grid-column: 2;
       grid-row: 1;
     }
 
-    .side-0 {
+    .ecc-col-0 {
       grid-column: 1;
       grid-row: 1;
-      justify-self: end;
     }
 
-    .side-1 {
+    .ecc-col-1 {
       grid-column: 3;
       grid-row: 1;
-      justify-self: start;
     }
   }
 
-  .side-card {
+  .ecc-card {
+    position: relative;
     display: grid;
-    gap: 0.6rem;
-    max-width: 340px;
-    padding: 1.5rem;
+    gap: 0.3rem;
+    padding: 1.05rem 1.2rem 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: border-color 0.4s, background-color 0.4s;
   }
 
-  .side-ic {
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--periwinkle-50);
-    color: var(--blue);
+  .ecc-card:hover {
+    border-color: rgba(180, 186, 234, 0.35);
+    background: rgba(255, 255, 255, 0.08);
   }
 
-  .side-card h3 {
-    font-size: 1.25rem;
-  }
-
-  .side-card p {
-    font-size: 0.9375rem;
-    color: var(--text-3);
-  }
-
-  .sig-foot {
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
-    margin-bottom: 0;
-  }
-
-  .sig-quote {
-    max-width: 34ch;
-    margin: 0;
+  .ecc-n {
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.6rem);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--periwinkle-200);
+  }
+
+  .ecc-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--white);
+  }
+
+  .ecc-card p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  /* Thin connectors from each card toward the sphere, ending in a dot */
+  @media (min-width: 1000px) {
+    .ecc-card::before,
+    .ecc-card::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+    }
+
+    .ecc-card::after {
+      width: clamp(1.5rem, 4vw, 3.5rem);
+      height: 1px;
+    }
+
+    .ecc-card::before {
+      width: 5px;
+      height: 5px;
+      margin-top: -2px;
+      border-radius: 50%;
+      background: var(--periwinkle-200);
+      box-shadow: 0 0 8px 2px rgba(180, 186, 234, 0.6);
+    }
+
+    .ecc-col-0 .ecc-card::after {
+      left: 100%;
+      background: linear-gradient(90deg, rgba(180, 186, 234, 0.55), rgba(180, 186, 234, 0));
+    }
+
+    .ecc-col-0 .ecc-card::before {
+      right: -3px;
+    }
+
+    .ecc-col-1 .ecc-card::after {
+      right: 100%;
+      background: linear-gradient(270deg, rgba(180, 186, 234, 0.55), rgba(180, 186, 234, 0));
+    }
+
+    .ecc-col-1 .ecc-card::before {
+      left: -3px;
+    }
+  }
+
+  .ecc-quote {
+    max-width: 32ch;
+    margin: clamp(1.25rem, 2.5vw, 1.75rem) auto 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 0.95rem + 1vw, 1.65rem);
     font-weight: 500;
     line-height: 1.3;
     letter-spacing: -0.02em;
-    color: var(--ink);
+    text-align: center;
+    text-wrap: balance;
+    color: var(--white);
+  }
+
+  /* Session flow and the call to action, on a bar at the foot of the panel */
+  .ecc-flow {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    padding-top: clamp(1.25rem, 2.5vw, 1.75rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  @media (min-width: 860px) {
+    .ecc-flow {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 2rem;
+    }
+  }
+
+  .flow-label {
+    margin-bottom: 0.9rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .flow-steps {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  @media (min-width: 640px) {
+    .flow-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  .flow-steps li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.1rem 0.7rem;
+  }
+
+  .flow-n {
+    display: grid;
+    grid-row: span 2;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(180, 186, 234, 0.4);
+    border-radius: 50%;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--periwinkle-200);
+  }
+
+  .flow-steps strong {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .flow-txt {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .ecc-flow .btn {
+    justify-self: start;
   }
 
   /* ---------- Programs ---------- */
@@ -1820,53 +2233,5 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
   .prog-row:hover .prog-go {
     background: #121214;
     color: var(--white);
-  }
-
-  /* ---------- Wordmark band ---------- */
-  .centre {
-    padding-top: 0;
-  }
-
-  .marquee {
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  }
-
-  .marquee-track {
-    display: flex;
-    width: max-content;
-  }
-
-  .marquee-set {
-    display: flex;
-    flex: none;
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 2rem + 7vw, 9rem);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.05em;
-    white-space: nowrap;
-    color: var(--ink);
-  }
-
-  .marquee-set > span {
-    padding-right: 0.3em;
-  }
-
-  .marquee-set > span:nth-child(even) {
-    color: var(--soft-ink);
-  }
-
-  .marquee-set i {
-    font-style: normal;
-    font-weight: 400;
-    color: var(--stone-300);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .marquee-track {
-      animation: marquee 38s linear infinite;
-    }
   }
 </style>

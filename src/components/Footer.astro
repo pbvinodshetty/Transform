@@ -1,9 +1,6 @@
 ---
 import Icon from './Icon.astro';
 import { site, nav, waLink } from '../data/site';
-import credits from '../assets/stock/CREDITS.json';
-
-const year = new Date().getFullYear();
 const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address.mapQuery)}`;
 ---
 
@@ -19,6 +16,7 @@ const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIC
             <Icon name="whatsapp" /> WhatsApp
           </a>
         </div>
+        <p class="cta-note">Our programs are complementary wellbeing practices, not a substitute for medical care.</p>
       </div>
     </div>
 
@@ -55,25 +53,6 @@ const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIC
     </div>
 
     <p class="wordmark" aria-hidden="true" data-animate>Transform Life</p>
-
-    <div class="base">
-      <p>© {year} {site.legalName} · {site.descriptor}, Bengaluru</p>
-      <p>Our programs are complementary wellbeing practices, not a substitute for medical care.</p>
-      <details class="credits">
-        <summary>Photo credits</summary>
-        <ul role="list">
-          {
-            credits.map((c) => (
-              <li>
-                <a href={c.source} target="_blank" rel="noopener">{c.title}</a> — {c.author}, {c.license}
-              </li>
-            ))
-          }
-          <li>All other photos © Transform Life Programs.</li>
-        </ul>
-      </details>
-      <a href="#top" class="to-top" aria-label="Back to top"><Icon name="arrow-up-right" size={18} class="up" /></a>
-    </div>
   </div>
 </footer>
 
@@ -123,6 +102,13 @@ const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIC
   .cta-side p {
     max-width: 34ch;
     font-size: var(--fs-md);
+  }
+
+  .cta-side .cta-note {
+    max-width: 44ch;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-3);
   }
 
   /* Columns */
@@ -241,58 +227,5 @@ const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIC
     color: transparent;
     user-select: none;
     text-align: center;
-  }
-
-  /* Base */
-  .base {
-    position: relative;
-    display: grid;
-    gap: 0.5rem;
-    padding-block: var(--s3);
-    padding-right: 3.5rem;
-    border-top: 1px solid var(--card-line);
-    font-size: 0.8125rem;
-    color: var(--text-3);
-  }
-
-  .credits summary {
-    cursor: pointer;
-    color: var(--text-2);
-  }
-
-  .credits ul {
-    display: grid;
-    gap: 0.3rem;
-    margin: 0.75rem 0 0;
-    padding: 0;
-  }
-
-  .credits a {
-    color: var(--text-2);
-  }
-
-  .to-top {
-    position: absolute;
-    right: 0;
-    top: var(--s3);
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--card-line);
-    border-radius: 50%;
-    background: var(--paper);
-    color: var(--ink);
-    transition: background-color 0.25s, color 0.25s, transform 0.3s var(--ease);
-  }
-
-  .to-top:hover {
-    background: var(--ink);
-    color: var(--white);
-    transform: translateY(-3px);
-  }
-
-  :global(.up) {
-    transform: rotate(-45deg);
   }
 </style>
