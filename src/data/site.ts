@@ -65,13 +65,24 @@ export const site = {
   },
 } as const;
 
-export const nav = [
+// Sections that are built but switched off for now. A section set to false
+// isn't rendered at all, and its menu link is hidden with it; set it back to
+// true to bring both back.
+export const sections = {
+  approach: false,
+  signature: false,
+  programs: false,
+};
+
+const links: { label: string; href: string; section?: keyof typeof sections }[] = [
   { label: 'Home', href: '#top' },
   { label: 'About', href: '#about' },
-  { label: 'Approach', href: '#approach' },
-  { label: 'Programs', href: '#programs' },
+  { label: 'Approach', href: '#approach', section: 'approach' },
+  { label: 'Programs', href: '#programs', section: 'programs' },
   { label: 'Contact', href: '#contact' },
 ];
+
+export const nav = links.filter((l) => !l.section || sections[l.section]);
 
 export const waLink = (number: string, text = '') =>
   `https://wa.me/${number}${text ? `?text=${encodeURIComponent(text)}` : ''}`;

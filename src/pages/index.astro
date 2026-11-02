@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import BlurTitle from '../components/BlurTitle.astro';
-import { site, waLink } from '../data/site';
+import { site, waLink, sections } from '../data/site';
 import { categories, programs, programsIn, programBySlug, type CategoryId } from '../data/programs';
 import { founder, awards } from '../data/people';
 import { img } from '../lib/images';
@@ -246,151 +246,163 @@ const booking = { when: 'Thursday · 11:00 am', where: `Dr. Deepa · ${site.addr
   </section>
 
   <!-- ============ APPROACH ============ -->
-  <section class="sec approach" id="approach">
-    <div class="wrap center-head">
-      <p class="eyebrow" data-animate>Our approach</p>
-      <BlurTitle text="Heal your body, mind *and spirit in one place.*" />
-      <p class="lede" data-animate>Counselling, energy healing and practical tools come together at our centre in Bengaluru. Start with a consultation and Dr. Deepa will help you choose the right path.</p>
-    </div>
-    <div class="wrap offer-grid" data-stagger>
-      {
-        offers.map((o, i) => (
-          <article class:list={['offer', { 'offer-lead': i === 0 }]}>
-            <Image
-              src={img(o.image)}
-              alt=""
-              widths={[640, 960, 1280, 1600]}
-              sizes={i === 0 ? '(min-width: 860px) 62vw, 100vw' : '(min-width: 860px) 46vw, 100vw'}
-              quality={88}
-            />
-            <span class="offer-tag">
-              <span class="offer-n">{String(i + 1).padStart(2, '0')}</span>
-              {o.tag}
-            </span>
-            <div class="offer-body">
-              <div>
-                <h3 class="card-title">{o.title}</h3>
-                <p>{o.text}</p>
-              </div>
-              <span class="offer-go" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
-            </div>
-            <a href={waLink(site.whatsapp.appointments, o.ask)} class="offer-link" target="_blank" rel="noopener">
-              <span class="visually-hidden">{o.cta}</span>
-            </a>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ============ SIGNATURE: Evolving Cosmic Communion in a night-sky panel ============ -->
-  <section class="sec signature" id="signature">
-    <div class="wrap center-head">
-      <p class="eyebrow" data-animate>Signature modality</p>
-      <BlurTitle text="Evolving Cosmic *Communion*" />
-      <p class="lede" data-animate>{ecc.short}</p>
-    </div>
-
-    <div class="wrap">
-      <div class="cosmos" data-cosmos data-animate>
-        <canvas class="cosmos-canvas" data-sphere aria-hidden="true"></canvas>
-
-        <div class="ecc-stage">
-          <div class="orb-slot" data-orb></div>
+  {
+    sections.approach && (
+      <section class="sec approach" id="approach">
+        <div class="wrap center-head">
+          <p class="eyebrow" data-animate>Our approach</p>
+          <BlurTitle text="Heal your body, mind *and spirit in one place.*" />
+          <p class="lede" data-animate>Counselling, energy healing and practical tools come together at our centre in Bengaluru. Start with a consultation and Dr. Deepa will help you choose the right path.</p>
+        </div>
+        <div class="wrap offer-grid" data-stagger>
           {
-            [ecc.explore.slice(0, 2), ecc.explore.slice(2, 4)].map((col, c) => (
-              <div class={`ecc-col ecc-col-${c}`}>
-                {col.map((e, k) => (
-                  <div class="ecc-card" data-animate={c === 0 ? 'left' : 'right'}>
-                    <span class="ecc-n">{String(c * 2 + k + 1).padStart(2, '0')}</span>
-                    <h3>{e.title}</h3>
-                    <p>{e.text}</p>
+            offers.map((o, i) => (
+              <article class:list={['offer', { 'offer-lead': i === 0 }]}>
+                <Image
+                  src={img(o.image)}
+                  alt=""
+                  widths={[640, 960, 1280, 1600]}
+                  sizes={i === 0 ? '(min-width: 860px) 62vw, 100vw' : '(min-width: 860px) 46vw, 100vw'}
+                  quality={88}
+                />
+                <span class="offer-tag">
+                  <span class="offer-n">{String(i + 1).padStart(2, '0')}</span>
+                  {o.tag}
+                </span>
+                <div class="offer-body">
+                  <div>
+                    <h3 class="card-title">{o.title}</h3>
+                    <p>{o.text}</p>
                   </div>
-                ))}
-              </div>
+                  <span class="offer-go" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
+                </div>
+                <a href={waLink(site.whatsapp.appointments, o.ask)} class="offer-link" target="_blank" rel="noopener">
+                  <span class="visually-hidden">{o.cta}</span>
+                </a>
+              </article>
             ))
           }
         </div>
+      </section>
+    )
+  }
 
-        {ecc.quote && <blockquote class="ecc-quote" data-animate>“{ecc.quote.replace(' — ', ' — ')}”</blockquote>}
+  <!-- ============ SIGNATURE: Evolving Cosmic Communion in a night-sky panel ============ -->
+  {
+    sections.signature && (
+      <section class="sec signature" id="signature">
+        <div class="wrap center-head">
+          <p class="eyebrow" data-animate>Signature modality</p>
+          <BlurTitle text="Evolving Cosmic *Communion*" />
+          <p class="lede" data-animate>{ecc.short}</p>
+        </div>
 
-        <div class="ecc-flow" data-animate>
-          <div>
-            <p class="flow-label">How a session flows</p>
-            <ol role="list" class="flow-steps">
+        <div class="wrap">
+          <div class="cosmos" data-cosmos data-animate>
+            <canvas class="cosmos-canvas" data-sphere aria-hidden="true"></canvas>
+
+            <div class="ecc-stage">
+              <div class="orb-slot" data-orb></div>
               {
-                (ecc.process ?? []).map((s, i) => (
-                  <li>
-                    <span class="flow-n">{String(i + 1).padStart(2, '0')}</span>
-                    <strong>{s.title}</strong>
-                    <span class="flow-txt">{s.text}</span>
-                  </li>
+                [ecc.explore.slice(0, 2), ecc.explore.slice(2, 4)].map((col, c) => (
+                  <div class={`ecc-col ecc-col-${c}`}>
+                    {col.map((e, k) => (
+                      <div class="ecc-card" data-animate={c === 0 ? 'left' : 'right'}>
+                        <span class="ecc-n">{String(c * 2 + k + 1).padStart(2, '0')}</span>
+                        <h3>{e.title}</h3>
+                        <p>{e.text}</p>
+                      </div>
+                    ))}
+                  </div>
                 ))
               }
-            </ol>
+            </div>
+
+            {ecc.quote && <blockquote class="ecc-quote" data-animate>“{ecc.quote.replace(' — ', ' — ')}”</blockquote>}
+
+            <div class="ecc-flow" data-animate>
+              <div>
+                <p class="flow-label">How a session flows</p>
+                <ol role="list" class="flow-steps">
+                  {
+                    (ecc.process ?? []).map((s, i) => (
+                      <li>
+                        <span class="flow-n">{String(i + 1).padStart(2, '0')}</span>
+                        <strong>{s.title}</strong>
+                        <span class="flow-txt">{s.text}</span>
+                      </li>
+                    ))
+                  }
+                </ol>
+              </div>
+              <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${ecc.name}.`)} class="btn btn-light" target="_blank" rel="noopener">Ask about ECC <Icon name="arrow-up-right" size={14} /></a>
+            </div>
           </div>
-          <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${ecc.name}.`)} class="btn btn-light" target="_blank" rel="noopener">Ask about ECC <Icon name="arrow-up-right" size={14} /></a>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    )
+  }
 
   <!-- ============ PROGRAMS ============ -->
-  <section class="sec programs" id="programs">
-    <div class="wrap center-head">
-      <p class="eyebrow" data-animate>Programs</p>
-      <BlurTitle text="Programs that *meet you where you are.*" />
-      <p class="lede" data-animate>{programs.length} programs across four themes. Not sure where to start? Ask us — we’ll help you choose.</p>
-    </div>
+  {
+    sections.programs && (
+      <section class="sec programs" id="programs">
+        <div class="wrap center-head">
+          <p class="eyebrow" data-animate>Programs</p>
+          <BlurTitle text="Programs that *meet you where you are.*" />
+          <p class="lede" data-animate>{programs.length} programs across four themes. Not sure where to start? Ask us — we’ll help you choose.</p>
+        </div>
 
-    <div class="wrap" data-tabs>
-      <div class="tab-row" role="tablist" aria-label="Program themes" data-animate>
-        {
-          catIds.map((id, i) => (
-            <button class={`tab-btn ${categories[id].tone}`} role="tab" id={`tab-${id}`} aria-controls={`theme-${id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab>
-              <span class="tab-dot" aria-hidden="true"></span>
-              {categories[id].name}
-              <span class="tab-count">{programsIn(id).length}</span>
-            </button>
-          ))
-        }
-      </div>
+        <div class="wrap" data-tabs>
+          <div class="tab-row" role="tablist" aria-label="Program themes" data-animate>
+            {
+              catIds.map((id, i) => (
+                <button class={`tab-btn ${categories[id].tone}`} role="tab" id={`tab-${id}`} aria-controls={`theme-${id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab>
+                  <span class="tab-dot" aria-hidden="true"></span>
+                  {categories[id].name}
+                  <span class="tab-count">{programsIn(id).length}</span>
+                </button>
+              ))
+            }
+          </div>
 
-      {
-        catIds.map((id, i) => {
-          const list = programsIn(id);
-          return (
-            <div class={`card panel ${categories[id].tone}`} role="tabpanel" id={`theme-${id}`} aria-labelledby={`tab-${id}`} data-panel data-active={i === 0 ? '' : undefined}>
-              <div class="panel-feature">
-                <div class="panel-img">
-                  <Image src={img(themeImages[id])} alt="" widths={[560, 900]} sizes="(min-width: 960px) 40vw, 92vw" />
+          {
+            catIds.map((id, i) => {
+              const list = programsIn(id);
+              return (
+                <div class={`card panel ${categories[id].tone}`} role="tabpanel" id={`theme-${id}`} aria-labelledby={`tab-${id}`} data-panel data-active={i === 0 ? '' : undefined}>
+                  <div class="panel-feature">
+                    <div class="panel-img">
+                      <Image src={img(themeImages[id])} alt="" widths={[560, 900]} sizes="(min-width: 960px) 40vw, 92vw" />
+                    </div>
+                    <div class="panel-info">
+                      <span class="ct">{list.length} programs</span>
+                      <h3 class="card-title">{categories[id].name}</h3>
+                      <p>{categories[id].blurb}</p>
+                    </div>
+                  </div>
+                  <ol role="list" class="prog-list">
+                    {list.map((p, n) => (
+                      <li>
+                        <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${p.name}.`)} class="prog-row" target="_blank" rel="noopener">
+                          <span class="prog-n">{String(n + 1).padStart(2, '0')}</span>
+                          <span class="prog-txt">
+                            <strong>{p.name}</strong>
+                            <span>{p.short}</span>
+                          </span>
+                          <span class="prog-go" aria-hidden="true"><Icon name="arrow-up-right" size={15} /></span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-                <div class="panel-info">
-                  <span class="ct">{list.length} programs</span>
-                  <h3 class="card-title">{categories[id].name}</h3>
-                  <p>{categories[id].blurb}</p>
-                </div>
-              </div>
-              <ol role="list" class="prog-list">
-                {list.map((p, n) => (
-                  <li>
-                    <a href={waLink(site.whatsapp.appointments, `Hello, I would like to know more about ${p.name}.`)} class="prog-row" target="_blank" rel="noopener">
-                      <span class="prog-n">{String(n + 1).padStart(2, '0')}</span>
-                      <span class="prog-txt">
-                        <strong>{p.name}</strong>
-                        <span>{p.short}</span>
-                      </span>
-                      <span class="prog-go" aria-hidden="true"><Icon name="arrow-up-right" size={15} /></span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          );
-        })
-      }
-    </div>
-  </section>
+              );
+            })
+          }
+        </div>
+      </section>
+    )
+  }
 </Base>
 
 <script>
